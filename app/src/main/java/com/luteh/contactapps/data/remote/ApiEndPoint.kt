@@ -5,4 +5,6 @@ package com.luteh.contactapps.data.remote
  * Email luthfanmaftuh@gmail.com
  */
 object ApiEndPoint {
+
+    const val ENDPOINT_CONTACT = "contact"
 }
