@@ -3,6 +3,8 @@ package com.luteh.contactapps.ui.listcontacts
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -50,7 +52,7 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
 
         viewModel.getAllContacts()
         fab_list_contacts_add.setOnClickListener {
-            showBottomSheetDialog()
+            showBottomSheetDialog(BottomSheetType.ADD)
         }
     }
 
@@ -62,8 +64,8 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
 
     private fun observeData() {
         viewModel.mIsLoading.observe(this, Observer {
-            pb_list_contacts.visibility = if (it) View.VISIBLE else View.GONE
-            rv_list_contacts.visibility = if (it) View.GONE else View.VISIBLE
+            pb_list_contacts.visibility = if (it) VISIBLE else GONE
+            rv_list_contacts.visibility = if (it) GONE else VISIBLE
         })
 
         viewModel.allContactsData.observe(this, Observer {
@@ -87,13 +89,27 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
         }
     }
 
-    private fun showBottomSheetDialog() {
+    private fun showBottomSheetDialog(bottomSheetType: BottomSheetType) {
         if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
         val view = LayoutInflater.from(this).inflate(R.layout.list_contacts_sheet, null)
 
         with(view) {
+            if (bottomSheetType == BottomSheetType.EDIT) {
+                tv_list_contacts_title_sheet.text = "Edit Contact"
+                btn_list_contacts_delete_sheet.apply {
+                    visibility = VISIBLE
+                    setOnClickListener { }
+                }
+                btn_list_contacts_add_sheet.apply {
+                    text = "Edit"
+                    setOnClickListener { }
+                }
+            } else {
+                btn_list_contacts_add_sheet.setOnClickListener { }
+            }
+
             btn_list_contacts_close_sheet.setOnClickListener {
                 mBottomSheetDialog?.hide()
             }
@@ -112,5 +128,9 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
 
     override fun onSuccessSaveContact(message: String) {
         longToast(message)
+    }
+
+    enum class BottomSheetType {
+        ADD, EDIT
     }
 }
