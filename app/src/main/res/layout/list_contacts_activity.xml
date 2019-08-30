@@ -41,6 +41,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/margin_large__"
-        android:src="@drawable/ic_add" />
+        android:clickable="true"
+        android:focusable="true"
+        app:fabSize="normal"
+        app:rippleColor="@color/grey_5"
+        app:srcCompat="@drawable/ic_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
