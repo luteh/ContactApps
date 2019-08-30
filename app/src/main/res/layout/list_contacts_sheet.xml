@@ -108,7 +108,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_list_contacts_delete_sheet"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -116,7 +116,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_list_contacts_add_sheet"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
