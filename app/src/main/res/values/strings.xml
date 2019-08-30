@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Contact Apps</string>
     <string name="label_contact_image">Contact image</string>
+    <string name="label_first_name">First name</string>
+    <string name="label_last_name">Last name</string>
+    <string name="label_ages">Ages</string>
+    <string name="label_delete">Delete</string>
+    <string name="label_add">Add</string>
+    <string name="label_add_contact">Add Contact</string>
 </resources>
