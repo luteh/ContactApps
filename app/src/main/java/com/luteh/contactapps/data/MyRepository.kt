@@ -9,7 +9,7 @@ import io.reactivex.Single
  * Created by Luthfan Maftuh on 8/30/2019.
  * Email luthfanmaftuh@gmail.com
  */
-interface ContactAppsRepository {
+interface MyRepository {
 
     fun getAllContacts(): Single<GetAllContactsResponse>
     fun saveContact(saveContactRequest: SaveContactRequest): Single<SaveContactResponse>

@@ -6,8 +6,8 @@ import com.luteh.contactapps.data.model.savecontact.SaveContactResponse
 import com.luteh.contactapps.data.remote.ApiServiceInterface
 import io.reactivex.Single
 
-class ContactAppsRepositoryImpl(private val apiServiceInterface: ApiServiceInterface) :
-    ContactAppsRepository {
+class MyRepositoryImpl(private val apiServiceInterface: ApiServiceInterface) :
+    MyRepository {
 
     override fun getAllContacts(): Single<GetAllContactsResponse> =
         apiServiceInterface.getAllContacts()

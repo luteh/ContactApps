@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference
  * Created by Luthfan Maftuh on 8/30/2019.
  * Email luthfanmaftuh@gmail.com
  */
-class BaseViewModel<N> : ViewModel() {
+abstract class BaseViewModel<N> : ViewModel() {
 
     var mIsLoading = MutableLiveData<Boolean>()
 
