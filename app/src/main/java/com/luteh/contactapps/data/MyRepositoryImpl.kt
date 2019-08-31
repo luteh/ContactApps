@@ -13,5 +13,7 @@ class MyRepositoryImpl(private val apiServiceInterface: ApiServiceInterface) :
         apiServiceInterface.getAllContacts()
 
     override fun saveContact(saveContactRequest: SaveContactRequest): Single<SaveContactResponse> =
-        apiServiceInterface.saveContact(saveContactRequest)
+        apiServiceInterface.saveContact(
+            saveContactRequest
+        )
 }

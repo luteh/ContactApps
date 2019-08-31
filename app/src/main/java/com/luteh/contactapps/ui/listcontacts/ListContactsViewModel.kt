@@ -36,9 +36,19 @@ class ListContactsViewModel(private val myRepository: MyRepository) :
         )
     }
 
-    fun saveContact(firstName: String, lastName: String, age: Int, photo: String) {
+    fun submitContact(firstName: String, lastName: String, age: String, photo: String) {
+        val saveContactRequest = SaveContactRequest(firstName, lastName, age, photo)
+        when (saveContactRequest.isValidContact()) {
+            0 -> mNavigator?.onErrorFirstNameEmpty()
+            1 -> mNavigator?.onErrorLastNameEmpty()
+            2 -> mNavigator?.onErrorAgeEmpty()
+            -1 -> saveContact(saveContactRequest)
+        }
+    }
+
+    private fun saveContact(saveContactRequest: SaveContactRequest) {
         compositeDisposable.add(
-            myRepository.saveContact(SaveContactRequest(firstName, lastName, age, photo))
+            myRepository.saveContact(saveContactRequest)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { mIsLoading.value = true }

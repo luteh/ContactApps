@@ -35,6 +35,7 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
 
     private lateinit var mBottomSheetBehavior: BottomSheetBehavior<View>
     private var mBottomSheetDialog: BottomSheetDialog? = null
+    private lateinit var mBottomSheetView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,9 +94,9 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
         if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-        val view = LayoutInflater.from(this).inflate(R.layout.list_contacts_sheet, null)
+        mBottomSheetView = LayoutInflater.from(this).inflate(R.layout.list_contacts_sheet, null)
 
-        with(view) {
+        with(mBottomSheetView) {
             if (bottomSheetType == BottomSheetType.EDIT) {
                 tv_list_contacts_title_sheet.text = "Edit Contact"
                 btn_list_contacts_delete_sheet.apply {
@@ -107,7 +108,20 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
                     setOnClickListener { }
                 }
             } else {
-                btn_list_contacts_add_sheet.setOnClickListener { }
+                btn_list_contacts_add_sheet.setOnClickListener {
+                    clearContactFormErrors()
+
+                    val firstName = et_list_contacts_first_name_sheet.text.toString()
+                    val lastName = et_list_contacts_last_name_sheet.text.toString()
+                    val age = et_list_contacts_age_sheet.text.toString()
+
+                    viewModel.submitContact(
+                        firstName,
+                        lastName,
+                        age,
+                        " "
+                    )
+                }
             }
 
             btn_list_contacts_close_sheet.setOnClickListener {
@@ -117,12 +131,41 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
 
         mBottomSheetDialog = BottomSheetDialog(this)
         mBottomSheetDialog?.apply {
-            setContentView(view)
+            setContentView(mBottomSheetView)
             window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             setOnDismissListener {
                 mBottomSheetDialog = null
             }
             show()
+        }
+    }
+
+    private fun clearContactFormErrors() {
+        with(mBottomSheetView) {
+            til_list_contacts_first_name_sheet.error = null
+            til_list_contacts_last_name_sheet.error = null
+            til_list_contacts_age_sheet.error = null
+        }
+    }
+
+    override fun onErrorFirstNameEmpty() {
+        with(mBottomSheetView) {
+            til_list_contacts_first_name_sheet.error = "First Name is required"
+            til_list_contacts_first_name_sheet.requestFocus()
+        }
+    }
+
+    override fun onErrorLastNameEmpty() {
+        with(mBottomSheetView) {
+            til_list_contacts_last_name_sheet.error = "Last name is required"
+            til_list_contacts_last_name_sheet.requestFocus()
+        }
+    }
+
+    override fun onErrorAgeEmpty() {
+        with(mBottomSheetView) {
+            til_list_contacts_age_sheet.error = "Age is required"
+            til_list_contacts_age_sheet.requestFocus()
         }
     }
 

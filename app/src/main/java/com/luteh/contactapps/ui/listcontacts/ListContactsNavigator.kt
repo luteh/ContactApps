@@ -6,4 +6,7 @@ package com.luteh.contactapps.ui.listcontacts
  */
 interface ListContactsNavigator {
     fun onSuccessSaveContact(message: String)
+    fun onErrorFirstNameEmpty()
+    fun onErrorLastNameEmpty()
+    fun onErrorAgeEmpty()
 }
