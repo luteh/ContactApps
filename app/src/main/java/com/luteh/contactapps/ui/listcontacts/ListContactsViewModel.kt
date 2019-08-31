@@ -47,8 +47,10 @@ class ListContactsViewModel(private val myRepository: MyRepository) :
         val saveContactRequest = SaveContactRequest(firstName, lastName, age, photo)
         when (saveContactRequest.isValidContact()) {
             0 -> mNavigator?.onErrorFirstNameEmpty()
-            1 -> mNavigator?.onErrorLastNameEmpty()
-            2 -> mNavigator?.onErrorAgeEmpty()
+            1 -> mNavigator?.onErrorFirstNameLength()
+            2 -> mNavigator?.onErrorLastNameEmpty()
+            3 -> mNavigator?.onErrorLastnameLength()
+            4 -> mNavigator?.onErrorAgeEmpty()
             -1 -> {
                 if (bottomSheetType == ListContactsActivity.BottomSheetType.ADD)
                     saveContact(saveContactRequest)

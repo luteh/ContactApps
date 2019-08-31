@@ -12,4 +12,6 @@ interface ListContactsNavigator {
     fun onErrorDeleteContact(message: String)
     fun onSuccessDeleteContact(message: String)
     fun onSuccessEditContact(message: String)
+    fun onErrorFirstNameLength()
+    fun onErrorLastnameLength()
 }

@@ -17,8 +17,10 @@ data class SaveContactRequest(
     fun isValidContact(): Int {
         return when {
             firstName.isEmpty() -> 0
-            lastName.isEmpty() -> 1
-            age.isEmpty() -> 2
+            firstName.length < 3 -> 1
+            lastName.isEmpty() -> 2
+            lastName.length < 3 -> 3
+            age.isEmpty() -> 4
             else -> -1
         }
     }

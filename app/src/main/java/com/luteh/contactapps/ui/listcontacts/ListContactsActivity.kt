@@ -226,10 +226,26 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
         }
     }
 
+    override fun onErrorFirstNameLength() {
+        with(mBottomSheetView) {
+            til_list_contacts_first_name_sheet.error =
+                getString(R.string.label_message_error_text_length)
+            til_list_contacts_first_name_sheet.requestFocus()
+        }
+    }
+
     override fun onErrorLastNameEmpty() {
         with(mBottomSheetView) {
             til_list_contacts_last_name_sheet.error =
                 getString(R.string.label_message_error_last_name_required)
+            til_list_contacts_last_name_sheet.requestFocus()
+        }
+    }
+
+    override fun onErrorLastnameLength() {
+        with(mBottomSheetView) {
+            til_list_contacts_last_name_sheet.error =
+                getString(R.string.label_message_error_text_length)
             til_list_contacts_last_name_sheet.requestFocus()
         }
     }
