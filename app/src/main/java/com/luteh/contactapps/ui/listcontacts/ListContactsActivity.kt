@@ -1,6 +1,8 @@
 package com.luteh.contactapps.ui.listcontacts
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -19,6 +21,7 @@ import com.luteh.contactapps.R
 import com.luteh.contactapps.data.model.getallcontacts.GetAllContactsData
 import com.luteh.contactapps.ui.MyViewModelFactory
 import com.luteh.contactapps.ui.listcontacts.adapter.ListContactsAdapter
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -30,6 +33,8 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 
 class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavigator {
+
+    private val TAG = "ListContactsActivity"
 
     override val kodein by closestKodein()
     private val viewModelFactory: MyViewModelFactory by instance()
@@ -72,14 +77,24 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
         viewModel.mNavigator = this
     }
 
+    @SuppressLint("DefaultLocale")
     private fun observeData() {
         viewModel.mIsLoading.observe(this, Observer {
             pb_list_contacts.visibility = if (it) VISIBLE else GONE
             rv_list_contacts.visibility = if (it) GONE else VISIBLE
         })
 
-        viewModel.allContactsData.observe(this, Observer {
-            listContactsAdapter.setDataSources(it)
+        viewModel.allContactsData.observe(this, Observer { listData ->
+            compositeDisposable.add(
+                Single.fromCallable { listData.sortedWith(compareBy { "${it.firstName.toUpperCase()} ${it.lastName.toUpperCase()}" }) }
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        listContactsAdapter.setDataSources(it)
+                    }, { throwable ->
+                        Log.e(TAG, "observeData: $throwable")
+                    })
+            )
         })
     }
 
@@ -205,14 +220,16 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
 
     override fun onErrorFirstNameEmpty() {
         with(mBottomSheetView) {
-            til_list_contacts_first_name_sheet.error = getString(R.string.label_message_error_first_name_required)
+            til_list_contacts_first_name_sheet.error =
+                getString(R.string.label_message_error_first_name_required)
             til_list_contacts_first_name_sheet.requestFocus()
         }
     }
 
     override fun onErrorLastNameEmpty() {
         with(mBottomSheetView) {
-            til_list_contacts_last_name_sheet.error = getString(R.string.label_message_error_last_name_required)
+            til_list_contacts_last_name_sheet.error =
+                getString(R.string.label_message_error_last_name_required)
             til_list_contacts_last_name_sheet.requestFocus()
         }
     }

@@ -99,7 +99,7 @@ class ListContactsViewModel(private val myRepository: MyRepository) :
                     mNavigator?.onSuccessDeleteContact(response.message)
                 }, { throwable ->
                     Log.e(TAG, "deleteContact: $throwable")
-                    mNavigator?.onErrorDeleteContact("Something went wrong")
+                    mNavigator?.onErrorDeleteContact("Something went wrong, please try again")
                 })
         )
     }
