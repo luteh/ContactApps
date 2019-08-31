@@ -10,7 +10,8 @@ import com.luteh.contactapps.data.model.getallcontacts.GetAllContactsData
  * Created by Luthfan Maftuh on 8/30/2019.
  * Email luthfanmaftuh@gmail.com
  */
-class ListContactsAdapter : RecyclerView.Adapter<ListContactsHolder>() {
+class ListContactsAdapter(private val listener: (GetAllContactsData) -> Unit) :
+    RecyclerView.Adapter<ListContactsHolder>() {
 
     private var dataSources: List<GetAllContactsData> = emptyList()
 
@@ -18,7 +19,7 @@ class ListContactsAdapter : RecyclerView.Adapter<ListContactsHolder>() {
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.list_contacts_item, parent, false)
 
-        return ListContactsHolder(itemView)
+        return ListContactsHolder(itemView, listener)
     }
 
     override fun getItemCount(): Int = dataSources.size

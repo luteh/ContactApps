@@ -11,7 +11,10 @@ import kotlinx.android.synthetic.main.list_contacts_item.view.*
  * Created by Luthfan Maftuh on 8/30/2019.
  * Email luthfanmaftuh@gmail.com
  */
-class ListContactsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class ListContactsHolder(
+    itemView: View,
+    private val listener: (GetAllContactsData) -> Unit
+) : RecyclerView.ViewHolder(itemView) {
 
     fun bindTo(getAllContactsData: GetAllContactsData) = with(itemView) {
         getAllContactsData.let {
@@ -21,6 +24,10 @@ class ListContactsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             GlideApp.with(this)
                 .load(R.drawable.ic_account_circle)
                 .into(iv_list_contacts_item)
+
+            setOnClickListener { _ ->
+                listener(it)
+            }
         }
     }
 }

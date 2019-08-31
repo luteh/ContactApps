@@ -16,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.luteh.contactapps.R
+import com.luteh.contactapps.data.model.getallcontacts.GetAllContactsData
 import com.luteh.contactapps.ui.MyViewModelFactory
 import com.luteh.contactapps.ui.listcontacts.adapter.ListContactsAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -37,7 +38,9 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val listContactsAdapter = ListContactsAdapter()
+    private val listContactsAdapter = ListContactsAdapter {
+        showBottomSheetDialog(BottomSheetType.EDIT, it)
+    }
 
     private lateinit var mBottomSheetBehavior: BottomSheetBehavior<View>
     private var mBottomSheetDialog: BottomSheetDialog? = null
@@ -96,7 +99,11 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
         }
     }
 
-    private fun showBottomSheetDialog(bottomSheetType: BottomSheetType) {
+    //region Bottom sheed dialog
+    private fun showBottomSheetDialog(
+        bottomSheetType: BottomSheetType,
+        data: GetAllContactsData? = null
+    ) {
         if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
@@ -123,21 +130,33 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
 
             if (bottomSheetType == BottomSheetType.EDIT) { // if bottom sheet type is EDIT contact
                 tv_list_contacts_title_sheet.text = "Edit Contact"
-                btn_list_contacts_delete_sheet.apply {
-                    visibility = VISIBLE
-                    setOnClickListener { }
-                }
-                btn_list_contacts_add_sheet.apply {
-                    text = "Edit"
-                    setOnClickListener { }
+                data?.let {
+                    et_list_contacts_first_name_sheet.setText(it.firstName)
+                    et_list_contacts_last_name_sheet.setText(it.lastName)
+                    et_list_contacts_age_sheet.setText(it.age.toString())
+
+                    btn_list_contacts_delete_sheet.apply {
+                        visibility = VISIBLE
+                        setOnClickListener { }
+                    }
+                    btn_list_contacts_add_sheet.apply {
+                        text = "Edit"
+                        setOnClickListener { _ ->
+
+                            viewModel.submitContact(
+                                firstName,
+                                lastName,
+                                age,
+                                " ",
+                                BottomSheetType.EDIT,
+                                it.id
+                            )
+                        }
+                    }
                 }
             } else { // if bottom sheet type is ADD contact
                 btn_list_contacts_add_sheet.setOnClickListener {
                     clearContactFormErrors()
-
-                    val firstName = et_list_contacts_first_name_sheet.text.toString()
-                    val lastName = et_list_contacts_last_name_sheet.text.toString()
-                    val age = et_list_contacts_age_sheet.text.toString()
 
                     viewModel.submitContact(
                         firstName,
@@ -164,6 +183,15 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
             show()
         }
     }
+
+    private val firstName: String
+        get() = mBottomSheetView.et_list_contacts_first_name_sheet.text.toString()
+
+    private val lastName: String
+        get() = mBottomSheetView.et_list_contacts_last_name_sheet.text.toString()
+
+    private val age: String
+        get() = mBottomSheetView.et_list_contacts_age_sheet.text.toString()
 
     private fun clearContactFormErrors() {
         with(mBottomSheetView) {
@@ -193,6 +221,7 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
             til_list_contacts_age_sheet.requestFocus()
         }
     }
+    //endregion
 
     override fun onSuccessSaveContact(message: String) {
         mBottomSheetDialog?.hide()
