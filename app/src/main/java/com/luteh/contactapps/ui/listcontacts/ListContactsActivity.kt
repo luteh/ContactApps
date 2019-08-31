@@ -143,7 +143,8 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
                         firstName,
                         lastName,
                         age,
-                        " "
+                        " ",
+                        BottomSheetType.ADD
                     )
                 }
             }

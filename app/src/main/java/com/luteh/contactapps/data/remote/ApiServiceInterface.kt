@@ -2,6 +2,7 @@ package com.luteh.contactapps.data.remote
 
 import com.luteh.contactapps.BuildConfig
 import com.luteh.contactapps.common.utils.Config
+import com.luteh.contactapps.data.model.editcontact.EditContactResponse
 import com.luteh.contactapps.data.model.getallcontacts.GetAllContactsResponse
 import com.luteh.contactapps.data.model.savecontact.SaveContactRequest
 import com.luteh.contactapps.data.model.savecontact.SaveContactResponse
@@ -26,6 +27,12 @@ interface ApiServiceInterface {
     fun saveContact(
         @Body saveContactRequest: SaveContactRequest
     ): Single<SaveContactResponse>
+
+    @PUT(ApiEndPoint.ENDPOINT_CONTACT_ID)
+    fun editContact(
+        @Path("id") id: String,
+        @Body saveContactRequest: SaveContactRequest
+    ): Single<EditContactResponse>
 
     companion object {
         operator fun invoke(): ApiServiceInterface {

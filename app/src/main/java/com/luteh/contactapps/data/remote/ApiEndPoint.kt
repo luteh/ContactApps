@@ -7,4 +7,6 @@ package com.luteh.contactapps.data.remote
 object ApiEndPoint {
 
     const val ENDPOINT_CONTACT = "contact"
+    const val ENDPOINT_CONTACT_ID = "contact/{id}"
+
 }

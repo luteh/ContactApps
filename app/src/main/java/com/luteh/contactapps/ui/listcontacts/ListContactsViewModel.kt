@@ -36,14 +36,41 @@ class ListContactsViewModel(private val myRepository: MyRepository) :
         )
     }
 
-    fun submitContact(firstName: String, lastName: String, age: String, photo: String) {
+    fun submitContact(
+        firstName: String,
+        lastName: String,
+        age: String,
+        photo: String,
+        bottomSheetType: ListContactsActivity.BottomSheetType,
+        id: String = ""
+    ) {
         val saveContactRequest = SaveContactRequest(firstName, lastName, age, photo)
         when (saveContactRequest.isValidContact()) {
             0 -> mNavigator?.onErrorFirstNameEmpty()
             1 -> mNavigator?.onErrorLastNameEmpty()
             2 -> mNavigator?.onErrorAgeEmpty()
-            -1 -> saveContact(saveContactRequest)
+            -1 -> {
+                if (bottomSheetType == ListContactsActivity.BottomSheetType.ADD)
+                    saveContact(saveContactRequest)
+                else
+                    editContact(id, saveContactRequest)
+            }
         }
+    }
+
+    private fun editContact(id: String, saveContactRequest: SaveContactRequest) {
+        compositeDisposable.add(
+            myRepository.editContact(id, saveContactRequest)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { mIsLoading.value = true }
+                .doOnTerminate { mIsLoading.value = false }
+                .subscribe({ response ->
+                    mNavigator?.onSuccessSaveContact(response.message)
+                }, { throwable ->
+                    Log.e(TAG, "editContact: $throwable")
+                })
+        )
     }
 
     private fun saveContact(saveContactRequest: SaveContactRequest) {
