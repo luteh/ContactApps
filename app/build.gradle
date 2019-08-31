@@ -39,6 +39,7 @@ ext {
     gson_version = '2.8.5'
     rxjava2_version = '2.2.7'
     rxandroid_version = '2.1.1'
+    rxbinding_version = '3.0.0-alpha2'
     kodein_version = '5.2.0'
     lifecycle_version = '2.0.0'
     glide_version = '4.9.0'
@@ -73,6 +74,7 @@ dependencies {
     // Rx
     implementation "io.reactivex.rxjava2:rxjava:$rxjava2_version"
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
+    implementation "com.jakewharton.rxbinding3:rxbinding:$rxbinding_version"
 
     // Retrofit2 + Gson
     implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"

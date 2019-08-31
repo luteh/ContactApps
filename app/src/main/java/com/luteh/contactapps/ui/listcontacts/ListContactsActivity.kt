@@ -14,9 +14,13 @@ import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.jakewharton.rxbinding3.widget.textChanges
 import com.luteh.contactapps.R
 import com.luteh.contactapps.ui.MyViewModelFactory
 import com.luteh.contactapps.ui.listcontacts.adapter.ListContactsAdapter
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.list_contacts_activity.*
 import kotlinx.android.synthetic.main.list_contacts_sheet.view.*
 import org.jetbrains.anko.longToast
@@ -30,6 +34,8 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
     private val viewModelFactory: MyViewModelFactory by instance()
 
     private lateinit var viewModel: ListContactsViewModel
+
+    private val compositeDisposable = CompositeDisposable()
 
     private val listContactsAdapter = ListContactsAdapter()
 
@@ -97,7 +103,25 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
         mBottomSheetView = LayoutInflater.from(this).inflate(R.layout.list_contacts_sheet, null)
 
         with(mBottomSheetView) {
-            if (bottomSheetType == BottomSheetType.EDIT) {
+            // listener to validate age format
+            compositeDisposable.add(
+                et_list_contacts_age_sheet.textChanges()
+                    .observeOn(Schedulers.io())
+                    .map { it.toString().trim() }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        if (it.startsWith("0")) {
+                            til_list_contacts_age_sheet.error =
+                                "Age format cannot start with zero (0)"
+                            til_list_contacts_age_sheet.requestFocus()
+                            et_list_contacts_age_sheet.setText("")
+                        } else if (it.isNotEmpty()) {
+                            til_list_contacts_age_sheet.error = null
+                        }
+                    }
+            )
+
+            if (bottomSheetType == BottomSheetType.EDIT) { // if bottom sheet type is EDIT contact
                 tv_list_contacts_title_sheet.text = "Edit Contact"
                 btn_list_contacts_delete_sheet.apply {
                     visibility = VISIBLE
@@ -107,7 +131,7 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
                     text = "Edit"
                     setOnClickListener { }
                 }
-            } else {
+            } else { // if bottom sheet type is ADD contact
                 btn_list_contacts_add_sheet.setOnClickListener {
                     clearContactFormErrors()
 
@@ -170,7 +194,14 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
     }
 
     override fun onSuccessSaveContact(message: String) {
+        mBottomSheetDialog?.hide()
+        viewModel.getAllContacts()
         longToast(message)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
     }
 
     enum class BottomSheetType {
