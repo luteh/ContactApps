@@ -7,4 +7,10 @@
     <string name="label_delete">Delete</string>
     <string name="label_add">Add</string>
     <string name="label_add_contact">Add Contact</string>
+    <string name="label_message_error_age_format">Age format cannot start with zero (0)</string>
+    <string name="title_edit_contact">Edit Contact</string>
+    <string name="label_edit">Edit</string>
+    <string name="label_message_error_first_name_required">First Name is required</string>
+    <string name="label_message_error_last_name_required">Last name is required</string>
+    <string name="label_message_error_age_required">Age is required</string>
 </resources>

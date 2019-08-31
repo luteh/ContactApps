@@ -9,4 +9,7 @@ interface ListContactsNavigator {
     fun onErrorFirstNameEmpty()
     fun onErrorLastNameEmpty()
     fun onErrorAgeEmpty()
+    fun onErrorDeleteContact(message: String)
+    fun onSuccessDeleteContact(message: String)
+    fun onSuccessEditContact(message: String)
 }

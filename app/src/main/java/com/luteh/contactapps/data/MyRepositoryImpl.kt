@@ -1,5 +1,6 @@
 package com.luteh.contactapps.data
 
+import com.luteh.contactapps.data.model.deletecontact.DeleteContactResponse
 import com.luteh.contactapps.data.model.editcontact.EditContactResponse
 import com.luteh.contactapps.data.model.getallcontacts.GetAllContactsResponse
 import com.luteh.contactapps.data.model.savecontact.SaveContactRequest
@@ -15,6 +16,9 @@ class MyRepositoryImpl(private val apiServiceInterface: ApiServiceInterface) :
         saveContactRequest: SaveContactRequest
     ): Single<EditContactResponse> =
         apiServiceInterface.editContact(id, saveContactRequest)
+
+    override fun deleteContact(id: String): Single<DeleteContactResponse> =
+        apiServiceInterface.deleteContact(id)
 
     override fun getAllContacts(): Single<GetAllContactsResponse> =
         apiServiceInterface.getAllContacts()

@@ -99,7 +99,7 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
         }
     }
 
-    //region Bottom sheed dialog
+    //region Bottom sheet dialog
     private fun showBottomSheetDialog(
         bottomSheetType: BottomSheetType,
         data: GetAllContactsData? = null
@@ -119,7 +119,7 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
                     .subscribe {
                         if (it.startsWith("0")) {
                             til_list_contacts_age_sheet.error =
-                                "Age format cannot start with zero (0)"
+                                getString(R.string.label_message_error_age_format)
                             til_list_contacts_age_sheet.requestFocus()
                             et_list_contacts_age_sheet.setText("")
                         } else if (it.isNotEmpty()) {
@@ -129,7 +129,7 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
             )
 
             if (bottomSheetType == BottomSheetType.EDIT) { // if bottom sheet type is EDIT contact
-                tv_list_contacts_title_sheet.text = "Edit Contact"
+                tv_list_contacts_title_sheet.text = getString(R.string.title_edit_contact)
                 data?.let {
                     et_list_contacts_first_name_sheet.setText(it.firstName)
                     et_list_contacts_last_name_sheet.setText(it.lastName)
@@ -137,10 +137,12 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
 
                     btn_list_contacts_delete_sheet.apply {
                         visibility = VISIBLE
-                        setOnClickListener { }
+                        setOnClickListener { _ ->
+                            viewModel.deleteContact(it.id)
+                        }
                     }
                     btn_list_contacts_add_sheet.apply {
-                        text = "Edit"
+                        text = getString(R.string.label_edit)
                         setOnClickListener { _ ->
 
                             viewModel.submitContact(
@@ -203,29 +205,46 @@ class ListContactsActivity : AppCompatActivity(), KodeinAware, ListContactsNavig
 
     override fun onErrorFirstNameEmpty() {
         with(mBottomSheetView) {
-            til_list_contacts_first_name_sheet.error = "First Name is required"
+            til_list_contacts_first_name_sheet.error = getString(R.string.label_message_error_first_name_required)
             til_list_contacts_first_name_sheet.requestFocus()
         }
     }
 
     override fun onErrorLastNameEmpty() {
         with(mBottomSheetView) {
-            til_list_contacts_last_name_sheet.error = "Last name is required"
+            til_list_contacts_last_name_sheet.error = getString(R.string.label_message_error_last_name_required)
             til_list_contacts_last_name_sheet.requestFocus()
         }
     }
 
     override fun onErrorAgeEmpty() {
         with(mBottomSheetView) {
-            til_list_contacts_age_sheet.error = "Age is required"
+            til_list_contacts_age_sheet.error = getString(R.string.label_message_error_age_required)
             til_list_contacts_age_sheet.requestFocus()
         }
     }
     //endregion
 
     override fun onSuccessSaveContact(message: String) {
+        onSuccessCommonBehavior(message)
+    }
+
+    override fun onSuccessEditContact(message: String) {
+        onSuccessCommonBehavior(message)
+    }
+
+    override fun onSuccessDeleteContact(message: String) {
+        onSuccessCommonBehavior(message)
+    }
+
+    private fun onSuccessCommonBehavior(message: String) {
         mBottomSheetDialog?.hide()
         viewModel.getAllContacts()
+        longToast(message)
+    }
+
+    override fun onErrorDeleteContact(message: String) {
+        mBottomSheetDialog?.hide()
         longToast(message)
     }
 

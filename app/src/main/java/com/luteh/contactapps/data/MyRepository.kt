@@ -1,5 +1,6 @@
 package com.luteh.contactapps.data
 
+import com.luteh.contactapps.data.model.deletecontact.DeleteContactResponse
 import com.luteh.contactapps.data.model.editcontact.EditContactResponse
 import com.luteh.contactapps.data.model.getallcontacts.GetAllContactsResponse
 import com.luteh.contactapps.data.model.savecontact.SaveContactRequest
@@ -14,5 +15,6 @@ interface MyRepository {
 
     fun getAllContacts(): Single<GetAllContactsResponse>
     fun saveContact(saveContactRequest: SaveContactRequest): Single<SaveContactResponse>
-    fun editContact(id:String, saveContactRequest: SaveContactRequest): Single<EditContactResponse>
+    fun editContact(id: String, saveContactRequest: SaveContactRequest): Single<EditContactResponse>
+    fun deleteContact(id: String):Single<DeleteContactResponse>
 }

@@ -61,12 +61,12 @@ class ListContactsViewModel(private val myRepository: MyRepository) :
     private fun editContact(id: String, saveContactRequest: SaveContactRequest) {
         compositeDisposable.add(
             myRepository.editContact(id, saveContactRequest)
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { mIsLoading.value = true }
                 .doOnTerminate { mIsLoading.value = false }
                 .subscribe({ response ->
-                    mNavigator?.onSuccessSaveContact(response.message)
+                    mNavigator?.onSuccessEditContact(response.message)
                 }, { throwable ->
                     Log.e(TAG, "editContact: $throwable")
                 })
@@ -76,7 +76,7 @@ class ListContactsViewModel(private val myRepository: MyRepository) :
     private fun saveContact(saveContactRequest: SaveContactRequest) {
         compositeDisposable.add(
             myRepository.saveContact(saveContactRequest)
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { mIsLoading.value = true }
                 .doOnTerminate { mIsLoading.value = false }
@@ -84,6 +84,22 @@ class ListContactsViewModel(private val myRepository: MyRepository) :
                     mNavigator?.onSuccessSaveContact(response.message)
                 }, { throwable ->
                     Log.e(TAG, "saveContact: $throwable")
+                })
+        )
+    }
+
+    fun deleteContact(id: String) {
+        compositeDisposable.add(
+            myRepository.deleteContact(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { mIsLoading.value = true }
+                .doOnTerminate { mIsLoading.value = false }
+                .subscribe({ response ->
+                    mNavigator?.onSuccessDeleteContact(response.message)
+                }, { throwable ->
+                    Log.e(TAG, "deleteContact: $throwable")
+                    mNavigator?.onErrorDeleteContact("Something went wrong")
                 })
         )
     }
